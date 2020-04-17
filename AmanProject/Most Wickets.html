@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head> 
+    <title>2019 Cricket World Cup</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.8/d3.min.js" type="text/JavaScript"></script>
+  <style>
+           .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+      background-color: coral;
+    }
+      .jumbotron{
+          background-color: white;
+      }
+    .node {
+      fill: #c70a02;
+    }
+    .link {
+      stroke: #9bd4f5;
+    }
+  
+    
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: coral;
+      padding: 25px;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <a class="navbar-brand" href="home.html">Home</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+       
+        <li><a href="Player of the Tournament.html">Highest Runs</a></li>
+        <li><a href="Winning Matches.html">Winning Matches</a></li>
+        <li><a href="Most Wickets.html">Most Wickets</a></li>
+           <li><a href="Tournament Progress.html">Tournamet Progress</a></li>
+          <li><a href="Participant Countries.html">Participant Countries</a></li>
+      </ul>
+        
+    </div>
+  </div>
+</nav>
+
+<div class="jumbotron">
+    <h3 class="container">Most Wickets</h3>    
+  
+  
+    
+    
+     <div class="container">
+        <svg style="width:1500px; height:500px;"> </svg>
+              <div class="bottomText"></div>
+            </div>
+          <script>
+              d3.csv("Wickets.csv", data => dataViz(data));
+                   var fillScale=d3.scaleOrdinal()
+                    .range(["#9edfe6", "#f0acf2", "#f1f299", "#f783a2", "#bfbeb4"]);
+              
+      function dataViz(incomingData)
+              {
+            var yScale = d3.scaleLinear().domain([0, 30]).range([20,450]);
+          
+       var svg=  d3.select("svg")
+         
+          .selectAll("rect") 
+          .data(incomingData)
+          .enter()
+          .append("rect")
+            .attr("width", 50)
+            .attr("height", d => yScale(parseInt(d.Wkts)))
+            .attr("x", (d,i) => i*70)
+            .attr("y", d => 470-yScale(parseInt(d.Wkts)))
+            .style("fill", (d,i)=>fillScale(i))
+         
+            .style("stroke", "#9A8B7A")
+            .on("click", Display);
+                function Display(d) {
+
+            let element = document.querySelector("div.bottomText");
+            element.innerHTML = d.Players +"  "+ d.Wkts ;
+            
+        }
+          
+      
+      }
+  
+            </script>
+        
+       
+        
+</div>
+  
+<footer  class="container-fluid text-center">
+ https://www.cricketworldcup.com
+</footer>
+
+
+</body>
+</html>

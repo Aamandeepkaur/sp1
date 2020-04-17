@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head> 
+    <title>2019 Cricket World Cup</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.8/d3.min.js" type="text/JavaScript"></script>
+  <style>
+           .navbar {
+      margin-bottom: 0;
+      border-radius: 0;background-color: coral;
+      background-color: coral;
+    }
+      .jumbotron{
+          background-color: white;
+      }
+    .node {
+      fill: #c70a02;
+    }
+    .link {
+      stroke: #9bd4f5;
+    }
+  
+    
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: coral;
+      padding: 25px;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <a class="navbar-brand" href="home.html">Home</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+       
+         <li><a href="Player of the Tournament.html">Highest Runs</a></li>
+        <li><a href="Winning Matches.html">Winning Matches</a></li>
+        <li><a href="Most Wickets.html">Most Wickets</a></li>
+           <li><a href="Tournament Progress.html">Tournamet Progress</a></li>
+          <li><a href="Participant Countries.html">Participant Countries</a></li>
+      </ul>
+   
+    </div>
+  </div>
+</nav>
+
+<h2 class="text-center">Winning Matches</h2>
+<div id="my_dataviz" style="margin-top: 55px"></div>
+
+
+<style>
+    .myCircle:hover {
+        stroke: green;
+    }
+</style>
+
+<script>
+
+
+    var margin = {top: 10, right: 30, bottom: 30, left: 60},
+        width = 660 - margin.left - margin.right,
+        height = 600 - margin.top - margin.bottom;
+
+
+    var svg = d3.select("#my_dataviz")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+
+    //Read the data
+    d3.csv('Winning.csv', data => dataViz(data));
+    function dataViz(data) {
+
+        var x = d3.scaleLinear()
+            .domain([0,10])
+            .range([0, width]);
+        svg.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x))
+
+
+        
+        var y = d3.scaleBand()
+            .range([ 0, height ])
+            .domain(data.map(d => d.team ))
+            .padding(1);
+        svg.append("g")
+            .call(d3.axisLeft(y))
+
+        
+        svg.append("path")
+            .datum(data)
+            .attr("fill", "none")
+            .attr("stroke", "#3b696e ")
+            .attr("stroke-width", 1)
+            .attr("d", d3.line()            
+                .x( d => x(d.matches))
+                .y( d => y(d.team))
+            )
+        
+        var Tooltip = d3.select("#my_dataviz")
+            .append("div")
+            .style("opacity", 0)
+            .attr("class", "tooltip")
+            .style("background-color", "#f78ff6")
+            .style("border", "solid")
+            .style("border-width", "2px")
+            .style("border-radius", "5px")
+            .style("padding", "5px")
+    
+        var mouseover = function (d) {
+            Tooltip
+                .style("opacity", 1)
+        }
+        var mousemove = function (d) {
+            Tooltip
+                .html("Winning Matches: " + d.matches)
+                .style("left", (d3.mouse(this)[0] + 70) + "px")
+                .style("top", (d3.mouse(this)[1]) + "px")
+        }
+        var mouseleave = function (d) {
+            Tooltip
+                .style("opacity", 0)
+        }
+
+        svg
+            .append("g")
+            .selectAll("dot")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("class", "myCircle")
+            .attr("cx",  d => x(d.matches))
+            .attr("cy",  d => y(d.team))
+            .attr("r", 8)
+            .attr("stroke", "#34ebd2")
+            .attr("stroke-width", 2)
+            .attr("fill", "#6b8032")
+            .on("mouseover", mouseover)
+            .on("mousemove", mousemove)
+            .on("mouseleave", mouseleave);
+    }
+
+
+
+</script>
+ 
+<footer  class="container-fluid text-center">
+ https://www.cricketworldcup.com
+</footer>       
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>2019 Cricket World Cup</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.8/d3.min.js" type="text/JavaScript"></script>
+  <style>
+    /* Remove the navbar's default margin-bottom and rounded borders */ 
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+        background-color: coral;
+    }
+      .jumbotron{
+          background-color: white;
+      }
+    .node {
+      fill: #c70a02;
+    }
+    .link {
+      stroke: #9bd4f5;
+    }
+  
+    
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: coral;
+      padding: 25px;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <a class="navbar-brand" href="home.html">Home</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+       
+       <li><a href="Player of the Tournament.html">Highest Runs</a></li>
+        <li><a href="Winning Matches.html">Winning Matches</a></li>
+        <li><a href="Most Wickets.html">Most Wickets</a></li>
+           <li><a href="Tournament Progress.html">Tournament Progress</a></li>
+          <li><a href="Participant Countries.html">Participant Countries</a></li>
+      </ul>
+   
+   
+    </div>
+  </div>
+</nav>
+   <h2 class="text-center">Tournament Progress </h2>
+    <div id="viz">
+      <svg style="width:900px;height:500px;" ></svg>
+    </div>
+    <div id="controls" ></div>
+    
+    <script>
+     
+      d3.csv("Progress.csv", data => overallTeamViz(data));
+      d3.text("tp.html", data => {
+        d3.select("body").append("div").attr("id", "tp").html(data);
+      });
+      
+      function overallTeamViz(incomingData) {
+        d3.select("svg")
+          .append("g")
+            .attr("id", "teamsG")
+            .attr("transform", "translate(50,300)")
+          .selectAll("g")
+          .data(incomingData)
+          .enter()
+          .append("g")
+            .attr("class", "overallG")
+            .attr("transform", (d, i) =>`translate(${(i * 100)}, 0)`);
+        
+        var teamG = d3.selectAll("g.overallG");
+        
+        teamG
+          .append("circle").attr("r", 0)
+          .transition()
+            .delay((d,i) => i * 100)
+            .duration(100)
+            .attr("r", 30)
+          .transition()
+            .duration(100)
+            .attr("r", 40);
+        
+        teamG
+          .append("text")
+            .style("text-anchor", "middle")
+            .attr("y", 55)
+            .text(d => d.team)  
+            .attr("transform", "rotate(-35)");
+        
+        teamG.on("click", teamClick);
+        
+        function teamClick (d) {
+          d3.selectAll("td.data").data(d3.values(d))
+              .html(p => p);
+        }
+        
+        d3.selectAll("g.overallG").insert("image", "text")
+            .attr("xlink:href", d => "./images/" + d.team + ".png")
+            .attr("width", "45px")
+            .attr("height", "35px")
+            .attr("x", "-22")
+            .attr("y", "-10");
+      }
+    </script>
+    
+
+  </body>
+</html>

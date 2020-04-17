@@ -1,0 +1,124 @@
+ <!DOCTYPE html>
+<html>
+<head> 
+    <title>2019 Cricket World Cup</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.8/d3.min.js" type="text/JavaScript"></script>
+  <style>
+           .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+      background-color: coral;
+    }
+      .jumbotron{
+          background-color: white;
+      }
+    .node {
+      fill: #c70a02;
+    }
+    .link {
+      stroke: #9bd4f5;
+    }
+      #nationsButton{
+          
+           margin-top:  100px;
+      }
+  
+    
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: coral;
+      padding: 25px;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <a class="navbar-brand" href="home.html">Home</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+       
+         <li><a href="Player of the Tournament.html">Highest Runs</a></li>
+        <li><a href="Winning Matches.html">Winning Matches</a></li>
+        <li><a href="Most Wickets.html">Most Wickets</a></li>
+           <li><a href="Tournament Progress.html">Tournamet Progress</a></li>
+          <li><a href="Participant Countries.html">Participant Countries</a></li>
+      </ul>
+        
+    </div>
+  </div>
+</nav>
+   <h2 class="text-center">Participating Countries</h2>
+    <div id="viz">
+      <svg style="width:900px;height:900px;" ></svg>
+        <button type="button" id="nationsButton" onclick="cwcnations()">Participating Nations</button>
+      </div>
+    <script>
+        
+        var Cricketworldcupnations=[];
+        
+        var PromiseWrapper = (xhr, d) => new Promise(resolve => xhr(d, (p) => resolve(p)));
+        Promise
+            .all([
+                PromiseWrapper(d3.json, "world.geojson"),
+                PromiseWrapper(d3.csv, "Participants.csv")
+            ])
+            .then(resolve => {
+                createMap(resolve[0], resolve[1]);
+            });
+        function createMap(countries, cricketcup) {
+            cricketcup.forEach(d=>{
+        
+               Cricketworldcupnations.push(d.Countries);
+                
+            });
+            var aprojection = d3.geoMercator()
+            .scale(120)
+            .translate([250, 250])
+            .center([30,0]);
+            
+            var geoPath = d3.geoPath()
+            .projection(aprojection);
+            
+            d3.select("svg")
+                .selectAll("path")
+                .data(countries.features)
+                .enter()
+                .append("path")
+                .attr("d", geoPath)
+                .attr("class", "countries")
+                .style("fill", "black");
+            
+            
+        }
+        function cwcnations(){
+            
+              d3.selectAll("path.countries")
+                  .style("fill","black");
+            
+            d3.selectAll("path.countries")
+                .filter(data=>Cricketworldcupnations.includes(data.properties.name))
+                .style("fill","#42d494  ");
+            
+        }
+        
+      </script>
+    
+<footer  class="container-fluid text-center">
+ https://www.cricketworldcup.com
+</footer>
+    </body>
+</html>
